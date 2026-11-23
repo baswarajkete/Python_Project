@@ -9,7 +9,7 @@ Display a transaction summary.
 '''
 
 class ATM:
-    def __init__(self,owner):
+    def __init__(self,owner):     
         self.owner = owner
         self.balance = 0
         self.l =[]
