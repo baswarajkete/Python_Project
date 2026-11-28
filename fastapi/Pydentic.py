@@ -19,9 +19,9 @@ class Student(BaseModel):
         age: int
         gpa: float
 
-        #model_config = {"strict": True} 
+        #model_config = {"strict": True}
 
-s = Student(name="Ram",age=23,gpa=10)
+s = Student(name="Ram",age=23,gpa=10) 
 print(s.name)
 print(s.age)
 
