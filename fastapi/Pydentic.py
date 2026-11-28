@@ -9,6 +9,8 @@ s = Student("Ram",'Twenty',10)
 print(s.name, s.age, s.gpa)
 
 #----------------------------------------------------------------------------------------
+from decimal import Decimal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 class Student(BaseModel):
@@ -335,4 +337,85 @@ r2 = ExperientRun(experient_name="Experiment 2", paraent_run_id=None)
 print(r1)
 print(r2)
 print(r1.run_id != r2.run_id)
+#------------------------------------------------------------------------------------------
+#Numeric constraints
+from pydantic import BaseModel, Field, ValidationError
 
+class Trainingdetails(BaseModel):
+     id: int = Field(gt=0, lt=1000)
+     batch_size: int = Field(gt=0,multiple_of=2)
+     learning_rate: float = Field(gt=0.0, lt =1.0, allow_inf_nan=False)
+     fees: Decimal = Field(max_digits=7, decimal_places=2)
+s1= Trainingdetails(id=10, batch_size=32, learning_rate=0.01, fees=13499.99)
+print(s1)
+
+try:
+     s2= Trainingdetails(id=1001, batch_size=33, learning_rate=0.01, fees=133499.99)
+     print(s2)
+except ValidationError as e:
+     print(f"Total numbers of errors found: {e.error_count()}")
+     for err in e.errors():
+        print(f"Fields: {err['loc']}, Type: {err['type']}, Message: {err['msg']}")
+print('-'*50)
+#-------------------------------------------------------------------------------------
+# String Contraints 
+from typing import Annotated
+from pydantic import BaseModel, Field, ValidationError, StringConstraints
+
+clean_data = Annotated[str, StringConstraints(strip_whitespace=True,min_length=1)]
+RollidConstraints = Annotated[str, StringConstraints(strip_whitespace=True, to_upper=True, pattern = "^[A-Za-z]{2,5}-[0-9]{5}$")]
+
+class Student(BaseModel):
+     name: clean_data
+     roll_id: RollidConstraints
+     email: Annotated[str, StringConstraints(strip_whitespace=True, to_lower=True, pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")]
+
+s1 = Student(name="  Ram  ", roll_id="abc-12345", email="baswaraj@example.com")
+print(s1)
+
+try:
+     s2 = Student(name="  ", roll_id="abc-1234", email="baswarajexample.com")
+     print(s2)
+except ValidationError as e:
+     print(f"Total numbers of errors found: {e.error_count()}")
+     for err in e.errors():
+        print(f"Fields: {err['loc']}, Type: {err['type']}, Message: {err['msg']}")
+#-------------------------------------------------------------------------------------
+print('-'*50)
+
+#List and Dict constraints
+from typing import Annotated
+from pydantic import BaseModel, Field, ValidationError, PositiveInt
+
+ProbVal = Annotated[float, Field(gt=0.0,lt=1.0,allow_inf_nan=False)]
+
+class NewClass(BaseModel):
+     request_id: PositiveInt
+     class_prob: list[ProbVal] = Field(min_length=2, max_length=10)
+     embadding: list[ProbVal] = Field(min_length=3,max_length=6, repr=False)
+
+
+p = NewClass(request_id=101,class_prob=[0.1,0.2], embadding=[0.3,0.6,0.4])
+print(p)
+
+try:
+    p2 = NewClass(request_id=101,class_prob=[1.1,0.2], embadding=[0.6,0.4])
+except ValidationError as e:
+     print(f"Total numbers of errors found: {e.error_count()}")
+     for err in e.errors():
+          print(f"Field: {err['loc']}, Type: {err['type']}, Message: {err['msg']}")
+
+print('-'*50)
+#--------------------------------------------------------------------------------------
+#Strict and frozen
+
+from pydantic import BaseModel, Field, ValidationError
+
+class Strict_user(BaseModel):
+     user_id: int=Field(strict=True)
+     emp_id: int=Field(frozen=True)
+
+p1 = Strict_user(user_id=10, emp_id=10)
+p2 = Strict_user(user_id=20, emp_id=20)
+print(p1)
+print(p2)

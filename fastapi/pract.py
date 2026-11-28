@@ -107,3 +107,13 @@ print(run1)
 print(run2)
 
 print(run1.run_id != run2.run_id)
+
+from typing import Literal
+from pydantic import validate_call
+@validate_call
+def set_status(status: Literal["success", "failed", "pending"]):
+    print(status)
+
+set_status("success")  # Valid
+set_status("failed")   # Valid
+set_status("hello")    # Type checker error
