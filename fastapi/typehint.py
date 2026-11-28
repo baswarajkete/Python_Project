@@ -19,7 +19,7 @@ print('-'*50)
 def get_items(item_a: str, item_b: int, item_c: bool, item_d: bytes, item_e: float):
     return item_a, item_b, item_c, item_d, item_e
 
-print(get_items('Ram', 100, True, b"a", 10))
+print(get_items('Ram', 100.999, True, b"a", 'wrong'))
 
 print('-'*50)
 
@@ -83,3 +83,4 @@ def get_status(name: str, role: Role):
 print(get_status('ram', Role.Hr))
 print(get_status('shyam', Role.TA))
 print(get_status('mohan', Role.Head))
+
