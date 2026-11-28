@@ -8,7 +8,7 @@ Ensure all balance changes go through validated methods.
 Test whether assigning to account.__balance changes the actual private balance.
 '''
 class ATM:
-    def __init__(self,owner):
+    def __init__(self,owner): 
         self.owner = owner
         self.__balance = 0
         self.__transactions =[]
