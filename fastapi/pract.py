@@ -117,3 +117,4 @@ def set_status(status: Literal["success", "failed", "pending"]):
 set_status("success")  # Valid
 set_status("failed")   # Valid
 set_status("hello")    # Type checker error this is only in pydantic class
+
